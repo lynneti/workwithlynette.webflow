@@ -145,6 +145,104 @@
       }
     </style>
     <style>
+      /* ---- Password modal ---- */
+      .pw-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+      }
+      .pw-overlay.is-active {
+        display: flex;
+      }
+      .pw-modal {
+        background: #fff;
+        border-radius: 16px;
+        padding: 48px 44px;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .pw-modal__title {
+        font-family: "DM Serif Display", serif;
+        font-size: 22px;
+        font-weight: 400;
+        color: #111;
+        margin: 0;
+      }
+      .pw-modal__subtitle {
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        color: #888;
+        margin: -10px 0 0;
+      }
+      .pw-modal__input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1.5px solid #e5e5e5;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        color: #111;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .pw-modal__input:focus {
+        border-color: #111;
+      }
+      .pw-modal__input.is-error {
+        border-color: #e03333;
+      }
+      .pw-modal__error {
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: #e03333;
+        display: none;
+        margin: -10px 0 0;
+      }
+      .pw-modal__error.is-visible {
+        display: block;
+      }
+      .pw-modal__btn {
+        background: #111;
+        color: #fff;
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .pw-modal__btn:hover {
+        background: #333;
+      }
+      .pw-modal__cancel {
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: #aaa;
+        text-align: center;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        transition: color 0.2s;
+      }
+      .pw-modal__cancel:hover {
+        color: #555;
+      }
+    </style>
+    <style>
       .custom-cursor {
         position: fixed;
         top: 0;
@@ -210,7 +308,7 @@
                 </li>
                 <li class="list-item-2">
                   <a
-                    href="documents/Designer%20resume.pdf"
+                    href="documents/design-resume-uxui.pdf"
                     target="_blank"
                     class="nav-link-6"
                     >Resume</a
@@ -1466,7 +1564,7 @@
           </a>
         </section>
         <section class="hero-image-div overlap-card">
-          <a href="projects/blinkle-ai.html" class="overlap-link">
+          <a href="projects/blinkle-ai.html" class="overlap-link" data-protected="projects/blinkle-ai.html">
             <img
               src="images/blinkle-hero-image.png"
               loading="lazy"
@@ -1483,7 +1581,7 @@
             </div>
           </a>
         </section>
-        <section class="hero-image-div overlap-card">
+        <section class="hero-image-div overlap-card" style="display:none">
           <a href="projects/overlap-design.html" class="overlap-link">
             <img
               src="images/Screenshot-2026-02-05-at-9.07.57-AM.png"
@@ -1511,7 +1609,24 @@
           </a>
         </section>
         <section class="hero-image-div overlap-card">
-          <a href="projects/woodhouse.html" class="overlap-link">
+          <a href="projects/china-mobile.html" class="overlap-link" data-protected="projects/china-mobile.html">
+            <img
+              src="images/china-mobile-hero.png"
+              loading="lazy"
+              alt="China Mobile project"
+              class="hero-image"
+            />
+            <div class="overlap-overlay">
+              <p class="overlap-title">China Mobile</p>
+            </div>
+            <div class="overlap-btns">
+              <span class="overlap-cta-btn">Product Design</span>
+              <span class="overlap-cta-btn">UX Research</span>
+            </div>
+          </a>
+        </section>
+        <section class="hero-image-div overlap-card">
+          <a href="projects/woodhouse.html" class="overlap-link" data-protected="projects/woodhouse.html">
             <div
               data-poster-url="videos/woodhouse-reversed_poster.0000000.jpg"
               data-video-urls="videos/woodhouse-reversed_mp4.mp4,videos/woodhouse-reversed_webm.webm"
@@ -2684,6 +2799,78 @@
             });
         });
       });
+    </script>
+
+    <!-- ==================== PASSWORD MODAL ==================== -->
+    <div class="pw-overlay" id="pwOverlay">
+      <div class="pw-modal">
+        <p class="pw-modal__title">This project is private</p>
+        <p class="pw-modal__subtitle">Enter the password to view the case study.</p>
+        <input
+          class="pw-modal__input"
+          id="pwInput"
+          type="password"
+          placeholder="Password"
+          autocomplete="off"
+        />
+        <p class="pw-modal__error" id="pwError">Incorrect password. Try again.</p>
+        <button class="pw-modal__btn" id="pwSubmit">Enter</button>
+        <button class="pw-modal__cancel" id="pwCancel">Cancel</button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var PASSWORD = "758020";
+        var overlay = document.getElementById("pwOverlay");
+        var input = document.getElementById("pwInput");
+        var error = document.getElementById("pwError");
+        var submitBtn = document.getElementById("pwSubmit");
+        var cancelBtn = document.getElementById("pwCancel");
+        var targetUrl = "";
+
+        // Intercept clicks on protected cards
+        document.querySelectorAll("[data-protected]").forEach(function (link) {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            targetUrl = link.getAttribute("data-protected");
+            input.value = "";
+            input.classList.remove("is-error");
+            error.classList.remove("is-visible");
+            overlay.classList.add("is-active");
+            setTimeout(function () { input.focus(); }, 50);
+          });
+        });
+
+        function checkPassword() {
+          if (input.value === PASSWORD) {
+            overlay.classList.remove("is-active");
+            window.location.href = targetUrl;
+          } else {
+            input.classList.add("is-error");
+            error.classList.add("is-visible");
+            input.value = "";
+          }
+        }
+
+        submitBtn.addEventListener("click", checkPassword);
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") checkPassword();
+          if (input.classList.contains("is-error")) {
+            input.classList.remove("is-error");
+            error.classList.remove("is-visible");
+          }
+        });
+
+        cancelBtn.addEventListener("click", function () {
+          overlay.classList.remove("is-active");
+        });
+
+        // Close on backdrop click
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) overlay.classList.remove("is-active");
+        });
+      })();
     </script>
   </body>
 </html>

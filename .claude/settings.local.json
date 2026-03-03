@@ -3,7 +3,9 @@
     "allow": [
       "mcp__claude_ai_Webflow__webflow_guide_tool",
       "mcp__claude_ai_Webflow__data_sites_tool",
-      "mcp__claude_ai_Webflow__data_pages_tool"
+      "mcp__claude_ai_Webflow__data_pages_tool",
+      "Bash(python3 -m http.server 8181)",
+      "Bash(rsync \"/Users/lynetteshen/Downloads/workwithlynette.webflow/Screenshot 2026-03-01 at 6.45.46 PM.png\" \"/Users/lynetteshen/Downloads/workwithlynette.webflow/images/system-context-1.png\")"
     ]
   }
 }

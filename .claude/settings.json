@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import shutil; shutil.copy\\(''/Users/lynetteshen/Downloads/workwithlynette.webflow/Screenshot 2026-03-01 at 6.45.46 PM.png'', ''/Users/lynetteshen/Downloads/workwithlynette.webflow/images/system-context-1.png''\\)\")"
+    ]
+  }
+}

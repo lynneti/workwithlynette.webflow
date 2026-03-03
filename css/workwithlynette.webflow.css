@@ -4764,7 +4764,7 @@ blockquote {
   margin-left: 5px;
   margin-right: 5px;
   padding: 5px 10px;
-  font-family: Inter, sans-serif;
+  font-family: Anton, sans-serif;
   font-size: 14px;
   line-height: 1.2;
   text-decoration: none;
@@ -6520,6 +6520,106 @@ blockquote {
 #w-node-_46fb8634-ca9b-73b2-3118-622cf137dacb-1e382319 {
   grid-template-rows: auto;
   grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ===== MOBILE LAYOUT ===== */
+.mobile-screen-message {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  /* Hide hero and selected work on mobile */
+  #hero-section,
+  .seletced-work {
+    display: none !important;
+  }
+
+  /* Show mobile message */
+  .mobile-screen-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 48px 32px;
+    text-align: center;
+    background: #fff;
+  }
+
+  .mobile-screen-message p {
+    font-family: Anton, sans-serif;
+    font-size: clamp(22px, 7vw, 32px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #1a1b1f;
+    margin: 0 0 80px;
+  }
+
+  .mobile-screen-message p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Navbar: hide logo and hamburger, force links visible */
+  .navbar-brand {
+    display: none !important;
+  }
+
+  .menu-button-2 {
+    display: none !important;
+  }
+
+  .nav-menu-wrapper.w-nav-menu {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+    background: transparent;
+    position: static !important;
+  }
+
+  .nav-menu-two {
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 0 !important;
+    border-radius: 0;
+    background: transparent;
+    gap: 0;
+  }
+
+  /* Hide "Home" link on mobile */
+  .nav-menu-two .list-item-2:first-child {
+    display: none;
+  }
+
+  .nav-link-6 {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  /* Thin border under nav */
+  .navbar-logo-left-container {
+    border-bottom: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Footer: keep visible, adjust heading size */
+  #footer-section {
+    display: block;
+  }
+
+  .heading-8 {
+    font-size: clamp(48px, 13vw, 80px);
+    line-height: 1;
+  }
+
+  .div-block-19 {
+    flex-wrap: wrap;
+  }
+
+  .code-embed-7 {
+    width: 60px;
+    height: 60px;
+  }
 }
 
 

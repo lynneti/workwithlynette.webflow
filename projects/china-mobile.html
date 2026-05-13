@@ -91,6 +91,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center top;
         display: block;
       }
 
@@ -156,7 +157,7 @@
       /* ---- Metadata row ---- */
       .ontario-meta {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 32px;
         margin-bottom: 80px;
         padding-bottom: 48px;
@@ -249,8 +250,220 @@
         max-width: 100%;
         color: #333;
       }
+      #overview {
+        margin-bottom: 160px;
+      }
+      .audit-tabs {
+        display: flex;
+        background: #efefef;
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+        width: fit-content;
+        margin-bottom: 36px;
+      }
+      .audit-tab {
+        position: relative;
+        overflow: hidden;
+        padding: 10px 32px;
+        border-radius: 7px;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: #999;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        transition: background 0.2s, color 0.2s;
+      }
+      .audit-tab.active {
+        background: #111;
+        color: #fff;
+      }
+      .audit-star {
+        position: absolute;
+        pointer-events: none;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1;
+        animation: auditStarTwinkle 1.6s ease-in-out infinite;
+      }
+      @keyframes auditStarTwinkle {
+        0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
+        50%       { opacity: 1;   transform: scale(1.3) rotate(20deg); }
+      }
+      .audit-panel {
+        display: none;
+      }
+      .audit-panel.active {
+        display: block;
+        animation: auditPanelIn 0.35s ease;
+      }
+      @keyframes auditPanelIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .audit-chart {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      }
+      .audit-chart thead th {
+        padding: 13px 16px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: #111;
+        background: #fff;
+        border-bottom: 1.5px solid #e0e0e0;
+      }
+      .audit-chart thead th .th-inner {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .audit-chart tbody td {
+        padding: 22px 16px;
+        vertical-align: top;
+        border-bottom: 1.5px solid #ebebeb;
+        color: #333;
+        line-height: 1.65;
+        background: #fff;
+      }
+      .audit-chart tbody tr:last-child td {
+        border-bottom: none;
+      }
+      .audit-chart tbody td + td {
+        border-left: 1.5px solid #ebebeb;
+      }
+      .audit-chart thead th + th {
+        border-left: 1.5px solid #ebebeb;
+      }
+      .audit-chart .col-type {
+        width: 180px;
+      }
+      .audit-chart th:nth-child(3),
+      .audit-chart td:nth-child(3) {
+        width: 260px;
+        min-width: 260px;
+      }
+      .audit-chart .type-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-weight: 600;
+        color: #111;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      .audit-chart .type-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .audit-chart ul {
+        margin: 0;
+        padding-left: 16px;
+      }
+      .audit-chart li {
+        margin-bottom: 4px;
+      }
       #challenge {
         margin-bottom: 260px;
+      }
+
+      /* ---- Design section ---- */
+      .design-banner {
+        display: inline-block;
+        background: #f0f0f0;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 32px;
+      }
+      .design-panel {
+        position: relative;
+        background: #f8f8f8;
+        border: 1.5px solid #e5e5e5;
+        border-radius: 16px;
+        padding: 56px 28px 28px;
+        min-height: 420px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      }
+      .design-tabs {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: flex;
+        background: #e4e4e4;
+        border-radius: 8px;
+        padding: 3px;
+        gap: 3px;
+      }
+      .design-tab {
+        padding: 7px 20px;
+        border-radius: 6px;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #888;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+        white-space: nowrap;
+      }
+      .design-tab.active {
+        background: #fff;
+        color: #111;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      }
+      .design-content {
+        display: none;
+      }
+      .design-content.active {
+        display: flex;
+        gap: 28px;
+        align-items: flex-start;
+        animation: auditPanelIn 0.3s ease;
+      }
+      .design-mockup {
+        flex: 1;
+        min-width: 0;
+      }
+      .design-mockup img {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+      }
+      .design-annotations {
+        width: 200px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding-top: 8px;
+      }
+      .design-annotation {
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: #555;
+        line-height: 1.5;
+        padding-left: 12px;
+        border-left: 2px solid #d0d0d0;
       }
       .ontario-section-img {
         width: 100%;
@@ -506,7 +719,7 @@
           padding: 40px 24px 80px;
         }
         .ontario-meta {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(3, 1fr);
         }
       }
       @media (max-width: 767px) {
@@ -642,41 +855,118 @@
         text-align: center;
         margin: 4px 0 0;
       }
+
+      /* ---- Product Problem Cards ---- */
+      .problem-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 48px;
+      }
+      .problem-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 36px 32px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e5e5;
+        cursor: default;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .problem-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(147, 197, 253, 0.5);
+      }
+      .problem-card__bar {
+        display: none;
+      }
+      .problem-card__number {
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #93c5fd;
+        line-height: 1;
+        letter-spacing: 0.06em;
+      }
+      .problem-card__content {
+        flex: 1;
+      }
+      .problem-card__title {
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #111;
+        margin: 0 0 12px;
+        line-height: 1.3;
+      }
+      .problem-card__body {
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.75;
+        color: #666;
+        margin: 0;
+      }
+      @media (max-width: 767px) {
+        .problem-cards {
+          grid-template-columns: 1fr;
+        }
+        .problem-card {
+          padding: 28px 24px;
+        }
+      }
     </style>
   </head>
   <body id="top">
     <!-- ==================== NAV ==================== -->
-    <div
-      data-animation="default"
-      data-collapse="medium"
-      data-duration="400"
-      data-easing="ease"
-      data-easing2="ease"
-      role="banner"
-      class="nav w-nav"
-    >
-      <div class="nav-copy w-container">
-        <div class="div-block-22">
-          <nav role="navigation" class="nav-menu w-nav-menu">
-            <a href="../index.html" class="nav-linkk w-nav-link">Work</a>
-            <a href="../about.html" class="nav-linkk w-nav-link">About</a>
-            <a
-              href="../documents/design-resume-uxui.pdf"
-              target="_blank"
-              class="nav-linkk w-nav-link"
-              >Resume</a
-            >
-          </nav>
-        </div>
-        <div class="menu-button w-nav-button">
-          <div class="w-icon-nav-menu"></div>
+    <div class="navbar-logo-left">
+      <div
+        data-animation="default"
+        data-collapse="medium"
+        data-duration="400"
+        data-easing="ease"
+        data-easing2="ease"
+        role="banner"
+        class="navbar-logo-left-container shadow-three w-nav"
+      >
+        <div class="container-8">
+          <div class="navbar-wrapper">
+            <a href="../index.html" class="navbar-brand w-nav-brand">
+              <div class="text-block-25">SHEN</div>
+            </a>
+            <nav role="navigation" class="nav-menu-wrapper w-nav-menu">
+              <ul role="list" class="nav-menu-two w-list-unstyled">
+                <li class="list-item-2">
+                  <a href="../index.html" class="nav-link-6">Home</a>
+                </li>
+                <li class="list-item-2">
+                  <a href="../index.html" class="nav-link-6">Work</a>
+                </li>
+                <li class="list-item-2">
+                  <a href="#" class="nav-link-6">Playground</a>
+                </li>
+                <li class="list-item-2">
+                  <a
+                    href="../documents/design-resume-uxui.pdf"
+                    target="_blank"
+                    class="nav-link-6"
+                    >Resume</a
+                  >
+                </li>
+              </ul>
+            </nav>
+            <div class="menu-button-2 w-nav-button">
+              <div class="w-icon-nav-menu"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ==================== HERO IMAGE ==================== -->
     <section class="ontario-hero">
-      <img src="../images/china-mobile-hero.png" alt="China Mobile project hero" />
+      <img src="../images/fetion_cover.png" alt="China Mobile project hero" />
     </section>
 
     <!-- ==================== MAIN LAYOUT ==================== -->
@@ -710,8 +1000,10 @@
         <!-- Section Navigation -->
         <nav class="ontario-sidebar-nav">
           <a href="#overview">Overview</a>
-          <a href="#research">Research</a>
           <a href="#challenge">Challenge</a>
+          <a href="#research">Research</a>
+          <a href="#problem">Insights</a>
+          <a href="#design">Design</a>
           <a href="#solution">Solution</a>
           <a href="#top">Back to top</a>
         </nav>
@@ -723,30 +1015,39 @@
         <div class="ontario-meta">
           <div>
             <div class="ontario-meta-label">Role</div>
-            <div class="ontario-meta-value">
-              UX/UI Designer
-            </div>
+            <div class="ontario-meta-value">UX/UI Designer</div>
           </div>
           <div>
             <div class="ontario-meta-label">Type</div>
             <div class="ontario-meta-value">
-              Product Design<br />
-              UX Research<br />
-              Visual Design
+              Enterprise SaaS<br />
+              Mobile App Design<br />
+              Internal Tools<br />
+              Marketplace
             </div>
           </div>
           <div>
             <div class="ontario-meta-label">Project Highlights</div>
             <div class="ontario-meta-value">
-              User research<br />
-              Wireframes<br />
-              Prototyping
+              UX Audit<br />
+              Workflow Optimization<br />
+              Interactive Wireframes
+            </div>
+          </div>
+          <div>
+            <div class="ontario-meta-label">Team</div>
+            <div class="ontario-meta-value">
+              2 Designers<br />
+              2 Developers<br />
+              PM
             </div>
           </div>
           <div>
             <div class="ontario-meta-label">Tools</div>
             <div class="ontario-meta-value">
               Figma<br />
+              WPS Spreadsheet<br />
+              Xmind
             </div>
           </div>
         </div>
@@ -754,87 +1055,207 @@
         <!-- OVERVIEW SECTION -->
         <div class="ontario-section" id="overview">
           <div class="ontario-section-label">Overview</div>
-          <h2 class="ontario-section-heading">
-            Project Overview
+          <h2 class="ontario-section-heading" style="max-width: 100%;">
+            🔧 Internal Workspace for enterprise
           </h2>
-          <p class="ontario-section-text">
-            Overview description goes here.
+          <p class="ontario-section-text" style="max-width: 100%;">
+            Fetion is an enterprise communication app developed by China Mobile that allows users to send and receive SMS messages between PCs and mobile phones for free.<br><br>
+            This project focuses on the enterprise version for employees, specifically the application mall, where staff can access and manage the tools they need for their work.
           </p>
         </div>
 
         <!-- CHALLENGE SECTION -->
         <div class="ontario-section" id="challenge">
           <div class="ontario-section-label">Challenge</div>
-          <h2 class="ontario-section-heading">
-            How might we...
+          <h2 class="ontario-section-heading" style="max-width: 100%;">
+            How might we optimize Fetion's app marketplace for both employees and admins?
           </h2>
-        </div>
-
-        <!-- SYSTEM CONTEXT SECTION -->
-        <div
-          class="ontario-section ontario-section--spacious"
-          id="system-context"
-        >
-          <div class="ontario-sysctx-layout">
-            <!-- Left: heading + text (updated by gallery JS) -->
-            <div class="ontario-sysctx-left">
-              <div class="ontario-section-label">Research</div>
-              <div
-                class="ontario-section-banner ontario-section-banner--narrow"
-              >
-                Step 1: Secondary research
-              </div>
-              <h2 class="ontario-sysctx-heading" id="sysctx-heading">Research heading</h2>
-              <p class="ontario-section-text" id="sysctx-body">
-                Research body text goes here.
-              </p>
-            </div>
-
-            <!-- Right: arrow-controlled image gallery -->
-            <div class="ontario-gallery">
-              <div class="ontario-gallery-frame">
-                <button
-                  class="ontario-gallery-arrow ontario-gallery-arrow--prev"
-                  aria-label="Previous image"
-                >
-                  &#8592;
-                </button>
-                <div class="ontario-gallery-main" id="gallery-main">
-                  <img
-                    src="../images/china-mobile-hero.png"
-                    alt="Research image 1"
-                    id="gallery-img"
-                  />
-                </div>
-                <button
-                  class="ontario-gallery-arrow ontario-gallery-arrow--next"
-                  aria-label="Next image"
-                >
-                  &#8594;
-                </button>
-              </div>
-              <p class="ontario-gallery-citation" id="gallery-citation"></p>
-              <div class="ontario-gallery-counter">
-                <span id="gallery-current">1</span> /
-                <span id="gallery-total">1</span>
-              </div>
-              <p class="ontario-gallery-caption">
-                ↑ click to explore research
-              </p>
-            </div>
-          </div>
         </div>
 
         <!-- RESEARCH SECTION -->
         <div class="ontario-section" id="research">
           <div class="ontario-section-label">Research</div>
-          <div class="ontario-section-banner ontario-section-banner--narrow">
-            Step 2: Define key assumptions
+          <h2 class="ontario-section-heading">Auditing for workflow and visuals</h2>
+
+          <!-- Tab switcher -->
+          <div class="audit-tabs">
+            <button class="audit-tab active" data-panel="panel-workflow">Workflow</button>
+            <button class="audit-tab" data-panel="panel-visual">Visual</button>
           </div>
-          <h2 class="ontario-section-heading">Research findings</h2>
-          <p class="ontario-section-text">
-            Research details go here.
-          </p>
+
+          <!-- Workflow panel -->
+          <div class="audit-panel active" id="panel-workflow">
+            <p class="ontario-section-text" style="max-width: 100%; margin-bottom: 28px;">To better understand the usability issues in the Fetion App Mall, I conducted a quick UX audit based on main user research insights, backend feedback logs, and user complaints gathered across multiple channels.</p>
+            <table class="audit-chart">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>
+                    <div class="th-inner">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#111" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg>
+                      What
+                    </div>
+                  </th>
+                  <th>
+                    <div class="th-inner">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3L4 20h16L12 3Z" stroke="#111" stroke-width="2" stroke-linejoin="round"/></svg>
+                      Impact
+                    </div>
+                  </th>
+                  <th>
+                    <div class="th-inner">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg>
+                      How to improve
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-type">
+                    <div class="type-label">
+                      <div class="type-icon" style="background:#fff3e0;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8Z" stroke="#e8790c" stroke-width="2" stroke-linejoin="round"/></svg>
+                      </div>
+                      High-friction workflow
+                    </div>
+                  </td>
+                  <td>
+                    The old userflow for installation causes unnecessary delay. Adding an app requires multiple manual steps:
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:12px;">
+                      <span style="background:#eef4ff;color:#4a7fd4;border:1px solid #c8dcfa;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;white-space:nowrap;">Contacting customer service</span>
+                      <span style="color:#bbb;font-size:14px;">→</span>
+                      <span style="background:#eef4ff;color:#4a7fd4;border:1px solid #c8dcfa;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;white-space:nowrap;">Writing a request</span>
+                      <span style="color:#bbb;font-size:14px;">→</span>
+                      <span style="background:#eef4ff;color:#4a7fd4;border:1px solid #c8dcfa;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:500;white-space:nowrap;">Waiting for higher-level approval</span>
+                    </div>
+                  </td>
+                  <td>
+                    <ul>
+                      <li>Delays in everyday tasks (e.g., reimbursements)</li>
+                      <li>Heavy customer support workload</li>
+                      <li>Low adoption of internal tools</li>
+                    </ul>
+                  </td>
+                  <td>Build an automated workflow that filters low-risk requests and lets admins approve in one click — removing the customer service bottleneck.</td>
+                </tr>
+                <tr>
+                  <td class="col-type">
+                    <div class="type-label">
+                      <div class="type-icon" style="background:#e8f0fe;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#3a6fd8" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#3a6fd8" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#3a6fd8" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#3a6fd8" stroke-width="2"/></svg>
+                      </div>
+                      Fragmented visual design
+                    </div>
+                  </td>
+                  <td>
+                    The indicator for apps/functions are unclear. Same color and design for different features shows up in the marketplace. Lack of design guidance in the early stage of this app.
+                    <br><br>
+                    <img src="../images/Screenshot 2026-05-13 at 9.33.46%E2%80%AFPM.png" alt="Duplicate app icons example" style="width:140px;border-radius:8px;display:block;">
+                    <span style="font-family:'Inter',sans-serif;font-size:11px;color:#aaa;display:block;margin-top:6px;">eg. reimburse and reimburse test uses the same indicator</span>
+                  </td>
+                  <td>
+                    <ul>
+                      <li>Weakens trust in the platform</li>
+                      <li>Reduces brand credibility</li>
+                      <li>Inconsistent user recognition</li>
+                    </ul>
+                  </td>
+                  <td>Establish a standardized design system with unified icon, color, and layout guidelines for all admin uploads.</td>
+                </tr>
+                <tr>
+                  <td class="col-type">
+                    <div class="type-label">
+                      <div class="type-icon" style="background:#e6f9f0;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="4" rx="1" stroke="#1e9e62" stroke-width="2"/><rect x="3" y="10" width="10" height="4" rx="1" stroke="#1e9e62" stroke-width="2"/><rect x="3" y="17" width="14" height="4" rx="1" stroke="#1e9e62" stroke-width="2"/></svg>
+                      </div>
+                      Poor info architecture
+                    </div>
+                  </td>
+                  <td>Insufficient spacing, weak prioritization, and no clear visual grouping make the marketplace hard to scan.</td>
+                  <td>
+                    <ul>
+                      <li>Increased cognitive load</li>
+                      <li>Poor first impression</li>
+                      <li>Users struggle to discover tools</li>
+                    </ul>
+                  </td>
+                  <td>Redesign the navigation with clear categories, and introduce stronger visual hierarchy through spacing, color, and typography.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Visual panel -->
+          <div class="audit-panel" id="panel-visual">
+            <p class="ontario-section-text" style="max-width: 100%; margin-bottom: 28px;">Focusing on where user complaints came in the most — the application marketplace page — I conducted a visual audit and found weak layout hierarchy and unregulated icon uploads, which together created a cluttered, inconsistent experience.</p>
+            <img src="../images/Screenshot 2026-05-13 at 10.40.04%E2%80%AFPM.png" alt="Visual audit of Fetion marketplace" style="width:100%;max-width:600px;border-radius:12px;display:block;margin:0 auto;">
+          </div>
+        </div>
+
+        <!-- PRODUCT PROBLEMS SECTION -->
+        <div class="ontario-section" id="problem">
+          <div class="ontario-section-label">Insights</div>
+          <h2 class="ontario-section-heading" style="max-width: 100%;">
+            🤔 What is driving users away?
+          </h2>
+          <div class="problem-cards">
+            <div class="problem-card" data-index="0">
+              <div class="problem-card__number">01</div>
+              <div class="problem-card__content">
+                <h3 class="problem-card__title">High Friction Workflow</h3>
+                <p class="problem-card__body">Adding an internal app required multiple manual steps and customer service intervention, creating unnecessary workloads for both users and support teams.</p>
+              </div>
+              <div class="problem-card__bar"></div>
+            </div>
+            <div class="problem-card" data-index="1">
+              <div class="problem-card__number">02</div>
+              <div class="problem-card__content">
+                <h3 class="problem-card__title">Poor Information Architecture</h3>
+                <p class="problem-card__body">The app store lacked clear hierarchy and intuitive navigation, making it hard for users to find the tools they were familiar with.</p>
+              </div>
+              <div class="problem-card__bar"></div>
+            </div>
+            <div class="problem-card" data-index="2">
+              <div class="problem-card__number">03</div>
+              <div class="problem-card__content">
+                <h3 class="problem-card__title">Fragmented Visual Design</h3>
+                <p class="problem-card__body">Without standardized guidelines, icons, colors, and layouts varied across the platform, creating a cluttered look that hurt usability and trust.</p>
+              </div>
+              <div class="problem-card__bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESIGN SECTION -->
+        <div class="ontario-section" id="design">
+          <div class="ontario-section-label">Design</div>
+          <h2 class="ontario-section-heading">User flow optimization flow</h2>
+          <div class="design-banner">1.0 Structural Optimization for Enhanced Usability</div>
+
+          <!-- Bordered panel with top-right tab switcher -->
+          <div class="design-panel">
+            <div class="design-tabs">
+              <button class="design-tab active" data-dpanel="dpanel-ia">IA optimization</button>
+              <button class="design-tab" data-dpanel="dpanel-userflow">User flow optimization</button>
+            </div>
+
+            <!-- IA optimization panel -->
+            <div class="design-content active" id="dpanel-ia">
+              <div class="design-mockup">
+                <!-- add image here -->
+              </div>
+              <div class="design-annotations"></div>
+            </div>
+
+            <!-- User flow optimization panel -->
+            <div class="design-content" id="dpanel-userflow">
+              <div class="design-mockup">
+                <!-- add image here -->
+              </div>
+              <div class="design-annotations"></div>
+            </div>
+          </div>
         </div>
 
         <!-- SOLUTION SECTION -->
@@ -936,6 +1357,48 @@
           currentIndex = (currentIndex + 1) % gallerySlides.length;
           updateGallery(currentIndex);
         }
+      });
+    </script>
+    <script>
+      function addStars(tab) {
+        for (var i = 0; i < 5; i++) {
+          var star = document.createElement('span');
+          star.className = 'audit-star';
+          star.textContent = i % 2 === 0 ? '✦' : '✧';
+          star.style.left = (8 + Math.random() * 78) + '%';
+          star.style.top  = (10 + Math.random() * 65) + '%';
+          star.style.fontSize = (6 + Math.random() * 5) + 'px';
+          star.style.animationDelay = (Math.random() * 1.4) + 's';
+          star.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+          tab.appendChild(star);
+        }
+      }
+
+      function removeStars(tab) {
+        tab.querySelectorAll('.audit-star').forEach(function(s) { s.remove(); });
+      }
+
+      document.querySelectorAll('.design-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.design-tab').forEach(function(t) { t.classList.remove('active'); });
+          document.querySelectorAll('.design-content').forEach(function(p) { p.classList.remove('active'); });
+          tab.classList.add('active');
+          document.getElementById(tab.dataset.dpanel).classList.add('active');
+        });
+      });
+
+      document.querySelectorAll('.audit-tab').forEach(function(tab) {
+        if (tab.classList.contains('active')) addStars(tab);
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.audit-tab').forEach(function(t) {
+            t.classList.remove('active');
+            removeStars(t);
+          });
+          document.querySelectorAll('.audit-panel').forEach(function(p) { p.classList.remove('active'); });
+          tab.classList.add('active');
+          addStars(tab);
+          document.getElementById(tab.dataset.panel).classList.add('active');
+        });
       });
     </script>
   </body>

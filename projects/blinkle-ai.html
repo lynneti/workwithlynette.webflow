@@ -82,63 +82,126 @@
         display: block;
       }
 
-      /* ---- Two-column wrapper ---- */
+      /* ---- Content wrapper ---- */
       .ontario-layout {
-        display: flex;
         width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
         min-height: 100vh;
       }
 
-      /* ---- Sticky left sidebar ---- */
-      .ontario-sidebar {
-        width: 260px;
-        min-width: 260px;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 48px 36px;
-        border-right: 1px solid #e5e5e5;
-        flex-shrink: 0;
-        box-sizing: border-box;
-      }
-      .ontario-sidebar-logo {
-        width: 32px;
-        height: 32px;
-      }
-      .ontario-sidebar-title {
-        font-family: "DM Serif Display", serif;
-        font-size: 26px;
-        font-weight: 400;
-        line-height: 1.25;
-        letter-spacing: -0.01em;
-        color: #111;
-      }
-      .ontario-sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .ontario-sidebar-nav a {
-        font-family: "Inter", sans-serif;
-        font-size: 14px;
-        font-weight: 400;
-        color: #999;
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      .ontario-sidebar-nav a:hover {
-        color: #111;
-      }
-
-      /* ---- Right scrollable content ---- */
+      /* ---- Content ---- */
       .ontario-content {
-        flex: 1;
-        min-width: 0;
         padding: 48px 64px 100px;
         box-sizing: border-box;
+      }
+
+      /* ---- Slide card hover reveal ---- */
+      .slide-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #e0e0e0;
+        aspect-ratio: 16/9;
+        position: relative;
+        transition: transform 0.3s ease;
+      }
+      .blinkle-slide:hover .slide-card {
+        transform: scale(1.03);
+      }
+      .slide-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        padding: 14px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .slide-title {
+        margin: 0;
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(18px, 2vw, 26px);
+        font-weight: 400;
+        color: #111;
+        line-height: 1.3;
+      }
+      .slide-body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        color: #555;
+        line-height: 1.5;
+        opacity: 0;
+        transform: translateY(10px);
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease;
+      }
+      .blinkle-slide:hover .slide-body {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 60px;
+      }
+
+      /* ---- Project expand panel ---- */
+      .slide-card {
+        cursor: pointer;
+      }
+      .project-expand {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.65s ease, margin-bottom 0.4s ease;
+        margin-bottom: 0;
+      }
+      .project-expand.is-open {
+        grid-template-rows: 1fr;
+        margin-bottom: 80px;
+      }
+      .project-expand__inner {
+        overflow: hidden;
+        min-height: 0;
+        background: #f5f5f5;
+        border-radius: 14px;
+        box-sizing: border-box;
+      }
+      .project-expand__content {
+        padding: 48px 40px;
+      }
+      .project-expand__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 48px;
+      }
+      .project-expand__close {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        background: none;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+        color: #888;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.2s, color 0.2s;
+      }
+      .project-expand__close:hover {
+        border-color: #111;
+        color: #111;
+      }
+      .project-expand__sub {
+        margin-bottom: 40px;
+      }
+      .project-expand__sub:last-child {
+        margin-bottom: 0;
       }
 
       /* ---- Metadata row ---- */
@@ -357,30 +420,7 @@
       /* ---- Responsive ---- */
       @media (max-width: 991px) {
         .ontario-layout {
-          flex-direction: column;
-        }
-        .ontario-sidebar {
-          width: 100%;
-          min-width: unset;
-          position: relative;
-          height: auto;
-          border-right: none;
-          border-bottom: 1px solid #e5e5e5;
-          padding: 32px 24px;
-          flex-direction: row;
-          flex-wrap: wrap;
-          align-items: center;
-          gap: 20px;
-        }
-        .ontario-sidebar-title {
-          font-size: 22px;
-          flex: 1;
-          min-width: 160px;
-        }
-        .ontario-sidebar-nav {
-          flex-direction: row;
-          flex-wrap: wrap;
-          gap: 12px 20px;
+          max-width: 100%;
         }
         .ontario-content {
           padding: 40px 24px 80px;
@@ -401,6 +441,72 @@
         .ontario-img-grid {
           grid-template-columns: 1fr;
         }
+      }
+
+      /* ---- Scroll animations ---- */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.75s ease, transform 0.75s ease;
+      }
+      .fade-up.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ---- Project card hover ---- */
+      .project-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      /* ---- Active nav ---- */
+      .ontario-sidebar-nav a.nav-active {
+        color: #000;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .fade-up {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+        .project-card {
+          transition: none;
+        }
+      }
+
+      /* ---- Work slideshow ---- */
+      .blinkle-slides-wrapper {
+        display: grid;
+      }
+      .blinkle-slide {
+        grid-column: 1;
+        grid-row: 1;
+        opacity: 0;
+        transition: opacity 0.7s ease;
+        pointer-events: none;
+      }
+      .blinkle-slide.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .blinkle-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        background: #ccc;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.2s, width 0.2s;
+      }
+      .blinkle-dot.active {
+        background: #111;
+        width: 18px;
       }
     </style>
   </head>
@@ -460,111 +566,210 @@
 
     <!-- ==================== MAIN LAYOUT ==================== -->
     <div class="ontario-layout">
-      <!-- LEFT SIDEBAR (sticky) -->
-      <aside class="ontario-sidebar">
-        <div class="ontario-sidebar-logo">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="0.75"
-              y="0.75"
-              width="22.5"
-              height="22.5"
-              rx="2.25"
-              stroke="#111"
-              stroke-width="1.5"
-            />
-          </svg>
-        </div>
-        <div class="ontario-sidebar-title">Blinkle AI</div>
-        <nav class="ontario-sidebar-nav">
-          <a href="#overview">Overview</a>
-          <a href="#contribution">Key Contribution</a>
-          <a href="#hmw">Challenge</a>
-          <a href="#research">Research</a>
-          <a href="#solution">Solution</a>
-          <a href="#top">Back to top</a>
-        </nav>
-      </aside>
-
-      <!-- RIGHT CONTENT (scrollable) -->
+      <!-- CONTENT -->
       <div class="ontario-content">
         <!-- METADATA ROW -->
         <div class="ontario-meta">
           <div>
-            <div class="ontario-meta-label">Role</div>
-            <div class="ontario-meta-value">UX/UI Designer</div>
+            <div class="ontario-meta-label fade-up">Role</div>
+            <div class="ontario-meta-value fade-up" data-delay="100">UX/UI Designer</div>
           </div>
           <div>
-            <div class="ontario-meta-label">Type</div>
-            <div class="ontario-meta-value">
+            <div class="ontario-meta-label fade-up">Type</div>
+            <div class="ontario-meta-value fade-up" data-delay="100">
               0→1 Product<br />
               B2B SaaS<br />
               Web Design
             </div>
           </div>
           <div>
-            <div class="ontario-meta-label">Project Highlights</div>
-            <div class="ontario-meta-value">
+            <div class="ontario-meta-label fade-up">Project Highlights</div>
+            <div class="ontario-meta-value fade-up" data-delay="100">
               Product Strategy<br />
               Interaction Design<br />
               Prototyping
             </div>
           </div>
           <div>
-            <div class="ontario-meta-label">Tools</div>
-            <div class="ontario-meta-value">Figma</div>
+            <div class="ontario-meta-label fade-up">Tools</div>
+            <div class="ontario-meta-value fade-up" data-delay="100">Figma</div>
           </div>
         </div>
 
         <!-- OVERVIEW SECTION -->
         <div class="ontario-section" id="overview">
-          <div class="ontario-section-label">Overview</div>
-          <h2 class="ontario-section-heading" style="max-width: 100%;">Reducing Cognitive Friction to Drive Homepage Conversions</h2>
-          <p class="ontario-section-text" style="max-width: 100%;">
-            Blinkle AI is an AI-powered job search platform that helps users build and optimize their resumes, then auto-apply to matched positions. As the product moved from alpha toward a public V2 launch, the existing homepage lacked the visual clarity and trust signals needed to convert new visitors into registered users. The goal was to redesign the homepage by aligning business objectives with user needs — within the constraints of a limited budget, minimal data, and a one-month timeline.
+          <div class="ontario-section-label fade-up">Background</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100" style="max-width: 100%">
+            What have we built so far
+          </h2>
+          <p class="ontario-section-text fade-up" data-delay="100" style="max-width: 100%">
+            Blinkle AI is an AI-powered job search platform that helps users
+            build and optimize their resumes, then auto-apply to matched
+            positions. As the product moved from alpha toward a public V2
+            launch, the existing homepage lacked the visual clarity and trust
+            signals needed to convert new visitors into registered users. The
+            goal was to redesign the homepage by aligning business objectives
+            with user needs — within the constraints of a limited budget,
+            minimal data, and a one-month timeline.
           </p>
         </div>
 
         <!-- WHAT DID I WORK ON SECTION -->
-        <div class="ontario-section" id="work-overview" style="background: #f5f5f5; border-radius: 14px; padding: 48px 40px;">
-          <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: #888; margin: 0 0 8px; letter-spacing: 0.02em;">Continue Designing for Blinkle....</p>
-          <h2 style="font-family: 'DM Serif Display', serif; font-size: clamp(24px, 3vw, 40px); font-weight: 400; color: #111; margin: 0 0 40px; line-height: 1.2;">What did I work on?</h2>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
-
-            <!-- Card 1 -->
-            <div style="background: #fff; border-radius: 10px; padding: 20px; border: 1px solid #e8e8e8;">
-              <div style="background: #f0f0f0; border-radius: 8px; aspect-ratio: 16/10; margin-bottom: 20px;"></div>
-              <p style="font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: #111; margin: 0 0 8px; line-height: 1.3;">Homepage Redesign</p>
-              <p style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #888; line-height: 1.65; margin: 0;">End-to-end redesign of the landing page for the V2 public launch.</p>
+        <div
+          class="ontario-section"
+          id="work-overview"
+          style="background: #f5f5f5; border-radius: 14px; padding: 48px 40px"
+        >
+          <p
+            class="fade-up"
+            style="
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 13px;
+              color: #888;
+              margin: 0 0 8px;
+              letter-spacing: 0.02em;
+            "
+          >
+            3 month, 4 projects
+          </p>
+          <h2
+            class="fade-up"
+            data-delay="100"
+            style="
+              font-family: &quot;DM Serif Display&quot;, serif;
+              font-size: clamp(24px, 3vw, 40px);
+              font-weight: 400;
+              color: #111;
+              margin: 0 0 40px;
+              line-height: 1.2;
+            "
+          >
+            What did I work on?
+          </h2>
+          <!-- Slideshow -->
+          <div class="blinkle-slides-wrapper fade-up" data-delay="150">
+            <!-- Slide 1 -->
+            <div class="blinkle-slide active">
+              <div class="slide-card" data-target="section-marketplace">
+                <img
+                  src="../images/Marketplace_final.jpg"
+                  alt="Interview Intelligence Hub"
+                  style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;"
+                />
+                <div class="slide-overlay">
+                  <p class="slide-title">Interview Intelligence Hub</p>
+                  <p class="slide-body">Data hub + Marketplace Resources</p>
+                </div>
+              </div>
             </div>
-
-            <!-- Card 2 -->
-            <div style="background: #fff; border-radius: 10px; padding: 20px; border: 1px solid #e8e8e8;">
-              <div style="background: #f0f0f0; border-radius: 8px; aspect-ratio: 16/10; margin-bottom: 20px;"></div>
-              <p style="font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: #111; margin: 0 0 8px; line-height: 1.3;">UX Audit</p>
-              <p style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #888; line-height: 1.65; margin: 0;">Audit of the existing landing page and main dashboard experience.</p>
+            <!-- Slide 2 -->
+            <div class="blinkle-slide">
+              <div class="slide-card" data-target="section-homepage-redesign">
+                <img
+                  src="../images/Hero%20header.png"
+                  alt="Home page redesign"
+                  style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;"
+                />
+                <div class="slide-overlay">
+                  <p class="slide-title">Home page redesign</p>
+                  <p class="slide-body">Landing page redesign for V2 public launch</p>
+                </div>
+              </div>
             </div>
-
-            <!-- Card 3 -->
-            <div style="background: #fff; border-radius: 10px; padding: 20px; border: 1px solid #e8e8e8;">
-              <div style="background: #f0f0f0; border-radius: 8px; aspect-ratio: 16/10; margin-bottom: 20px;"></div>
-              <p style="font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: #111; margin: 0 0 8px; line-height: 1.3;">Product Strategy</p>
-              <p style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #888; line-height: 1.65; margin: 0;">Discussions around AI credit usage, credit management, and business plan.</p>
+            <!-- Slide 3 -->
+            <div class="blinkle-slide">
+              <div class="slide-card" data-target="section-dashboard">
+                <img
+                  src="../images/Dashboard%20-%20Basic.png"
+                  alt="Dashboard Redesign"
+                  style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;"
+                />
+                <div class="slide-overlay">
+                  <p class="slide-title">Dashboard Redesign</p>
+                  <p class="slide-body">Core product dashboard UX redesign</p>
+                </div>
+              </div>
             </div>
+          </div>
+          <!-- Dot indicators -->
+          <div style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;">
+            <button class="blinkle-dot active" aria-label="Slide 1"></button>
+            <button class="blinkle-dot" aria-label="Slide 2"></button>
+            <button class="blinkle-dot" aria-label="Slide 3"></button>
+          </div>
+        </div>
 
+        <!-- EXPAND: INTERVIEW INTELLIGENCE HUB -->
+        <div class="project-expand" id="section-marketplace">
+          <div class="project-expand__inner">
+            <div class="project-expand__content">
+              <div class="project-expand__header">
+                <div>
+                  <div class="ontario-section-label">Project 01</div>
+                  <h2 class="ontario-section-heading" style="margin-bottom: 0;">Interview Intelligence Hub</h2>
+                </div>
+                <button class="project-expand__close" aria-label="Close">&#x2715;</button>
+              </div>
+              <div class="project-expand__sub">
+                <div class="ontario-section-label">Overview</div>
+                <p class="ontario-section-text" style="margin-bottom: 0;">The Interview Intelligence Hub is a centralized data resource and marketplace that connects hiring teams with structured interview insights, evaluation frameworks, and curated toolkits — enabling faster, more consistent hiring decisions.</p>
+              </div>
+              <div class="project-expand__sub">
+                <div class="ontario-section-label">Challenge</div>
+                <p class="ontario-section-text" style="margin-bottom: 0;">Hiring teams lacked a unified place to find vetted interview resources. Existing tools were fragmented, inconsistent in quality, and difficult to adapt to specific roles — leading to inefficient processes and inconsistent candidate experiences.</p>
+              </div>
+              <div class="project-expand__sub">
+                <div class="ontario-section-label">Solution</div>
+                <p class="ontario-section-text" style="margin-bottom: 0;">Designed a structured hub that separates data intelligence from marketplace resources, surfacing relevant content through role-based filtering and progressive disclosure — reducing decision fatigue while improving resource discovery.</p>
+              </div>
+              <div class="project-expand__sub">
+                <div class="ontario-section-label">My Role</div>
+                <p class="ontario-section-text" style="margin-bottom: 0;">End-to-end product design: information architecture, wireframing, interaction design, and final UI. Collaborated with product and engineering to validate feasibility within sprint constraints.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPAND: HOME PAGE REDESIGN -->
+        <div class="project-expand" id="section-homepage-redesign">
+          <div class="project-expand__inner">
+            <div class="project-expand__content">
+              <div class="project-expand__header">
+                <div>
+                  <div class="ontario-section-label">Project 02</div>
+                  <h2 class="ontario-section-heading" style="margin-bottom: 0;">Home page redesign</h2>
+                </div>
+                <button class="project-expand__close" aria-label="Close">&#x2715;</button>
+              </div>
+              <div class="project-expand__sub">
+                <p class="ontario-section-text" style="margin-bottom: 0;">Add your content here for the Home page redesign project.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPAND: DASHBOARD REDESIGN -->
+        <div class="project-expand" id="section-dashboard">
+          <div class="project-expand__inner">
+            <div class="project-expand__content">
+              <div class="project-expand__header">
+                <div>
+                  <div class="ontario-section-label">Project 03</div>
+                  <h2 class="ontario-section-heading" style="margin-bottom: 0;">Dashboard Redesign</h2>
+                </div>
+                <button class="project-expand__close" aria-label="Close">&#x2715;</button>
+              </div>
+              <div class="project-expand__sub">
+                <p class="ontario-section-text" style="margin-bottom: 0;">Add your content here for the Dashboard Redesign project.</p>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- CHALLENGE SECTION -->
         <div class="ontario-section" id="challenge">
-          <div class="ontario-section-label">Design</div>
-          <h2 class="ontario-section-heading">Landing Page Redesign</h2>
+          <div class="ontario-section-label fade-up">Design</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100">Landing Page Redesign</h2>
           <div style="display: flex; gap: 32px">
             <div style="flex: 0 0 calc(40% - 16px); min-width: 0">
               <p
@@ -623,46 +828,88 @@
 
         <!-- KEY CONTRIBUTION SECTION -->
         <div class="ontario-section" id="contribution">
-          <div class="ontario-section-label">Design</div>
-          <h2 class="ontario-section-heading">Key Contribution</h2>
-          <ul style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.9; color: #333; padding-left: 20px; margin: 0;">
+          <div class="ontario-section-label fade-up">Design</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100">Key Contribution</h2>
+          <ul
+            style="
+              font-family: &quot;Inter&quot;, sans-serif;
+              font-size: 16px;
+              font-weight: 400;
+              line-height: 1.9;
+              color: #333;
+              padding-left: 20px;
+              margin: 0;
+            "
+          >
             <li>Led the end-to-end redesign of Blinkle AI's landing page</li>
-            <li>Conducted a UX audit of the existing landing page and main dashboard</li>
+            <li>
+              Conducted a UX audit of the existing landing page and main
+              dashboard
+            </li>
             <li>Optimized the onboarding experience to help users to adapt</li>
-            <li>Product strategy discussions around AI credit usage, credit management, and business plan</li>
+            <li>
+              Product strategy discussions around AI credit usage, credit
+              management, and business plan
+            </li>
           </ul>
         </div>
 
         <!-- CASE STUDY OVERVIEW SECTION -->
         <div class="ontario-section" id="case-overview">
-          <div class="ontario-section-label">Overview</div>
-          <h2 class="ontario-section-heading" style="max-width: 100%;">Reducing Cognitive Friction to Drive Homepage Conversions</h2>
-          <p class="ontario-section-text" style="max-width: 100%;">
-            Blinkle AI is an AI-powered job search platform that helps users build and optimize their resumes, then auto-apply to matched positions. As the product moved from alpha toward a public V2 launch, the existing homepage lacked the visual clarity and trust signals needed to convert new visitors into registered users. The goal was to redesign the homepage by aligning business objectives with user needs — within the constraints of a limited budget, minimal data, and a one-month timeline.
+          <div class="ontario-section-label fade-up">Overview</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100" style="max-width: 100%">
+            Reducing Cognitive Friction to Drive Homepage Conversions
+          </h2>
+          <p class="ontario-section-text fade-up" data-delay="100" style="max-width: 100%">
+            Blinkle AI is an AI-powered job search platform that helps users
+            build and optimize their resumes, then auto-apply to matched
+            positions. As the product moved from alpha toward a public V2
+            launch, the existing homepage lacked the visual clarity and trust
+            signals needed to convert new visitors into registered users. The
+            goal was to redesign the homepage by aligning business objectives
+            with user needs — within the constraints of a limited budget,
+            minimal data, and a one-month timeline.
           </p>
         </div>
 
         <!-- CHALLENGE SECTION -->
-        <div class="ontario-section" id="hmw" style="margin-bottom: 260px;">
-          <div class="ontario-section-label">Challenge</div>
-          <h2 class="ontario-section-heading" style="max-width: 100%;">How might we lower the cognitive barrier for new users so they understand Blinkle's value and take action — even without prior data or social proof?</h2>
-          <div class="ontario-grey-block">
-            <p class="ontario-grey-block__text">Constraints: limited resources · limited budget · early-stage product · lack of data support</p>
+        <div class="ontario-section" id="hmw" style="margin-bottom: 260px">
+          <div class="ontario-section-label fade-up">Challenge</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100" style="max-width: 100%">
+            How might we lower the cognitive barrier for new users so they
+            understand Blinkle's value and take action — even without prior data
+            or social proof?
+          </h2>
+          <div class="ontario-grey-block fade-up" data-delay="150">
+            <p class="ontario-grey-block__text">
+              Constraints: limited resources · limited budget · early-stage
+              product · lack of data support
+            </p>
           </div>
         </div>
 
         <!-- RESEARCH STEP 1 -->
         <div class="ontario-section" id="research">
-          <div class="ontario-section-label">Research</div>
-          <div class="ontario-section-banner ontario-section-banner--narrow">
+          <div class="ontario-section-label fade-up">Research</div>
+          <div class="ontario-section-banner ontario-section-banner--narrow fade-up" data-delay="50">
             Step 1: Understand the business &amp; design process
           </div>
-          <h2 class="ontario-section-heading">Define the design framework</h2>
-          <p class="ontario-section-text">
-            The project followed five phases: understanding business goals → competitive analysis → design audit → design tradeoffs &amp; recommendations 1.0 → final design solution.
+          <h2 class="ontario-section-heading fade-up" data-delay="100">Define the design framework</h2>
+          <p class="ontario-section-text fade-up" data-delay="100">
+            The project followed five phases: understanding business goals →
+            competitive analysis → design audit → design tradeoffs &amp;
+            recommendations 1.0 → final design solution.
           </p>
-          <p class="ontario-section-text">The overarching business goal: by optimizing the homepage's visual hierarchy and trust-building mechanisms, reduce new users' cognitive barriers and increase homepage registration conversion rate. Three focus areas drove this:</p>
-          <ul class="ontario-section-text" style="padding-left: 20px; max-width: 680px; margin-top: 0;">
+          <p class="ontario-section-text fade-up" data-delay="100">
+            The overarching business goal: by optimizing the homepage's visual
+            hierarchy and trust-building mechanisms, reduce new users' cognitive
+            barriers and increase homepage registration conversion rate. Three
+            focus areas drove this:
+          </p>
+          <ul
+            class="ontario-section-text fade-up" data-delay="100"
+            style="padding-left: 20px; max-width: 680px; margin-top: 0"
+          >
             <li>Optimize visual hierarchy and CTA design</li>
             <li>Clarify how the product workflow is presented</li>
             <li>Convey product credibility through design language itself</li>
@@ -671,98 +918,321 @@
 
         <!-- RESEARCH STEP 2 -->
         <div class="ontario-section" id="research-step2">
-          <div class="ontario-section-label">Research</div>
-          <div class="ontario-section-banner ontario-section-banner--narrow">
+          <div class="ontario-section-label fade-up">Research</div>
+          <div class="ontario-section-banner ontario-section-banner--narrow fade-up" data-delay="50">
             Step 2: User testing
           </div>
-          <h2 class="ontario-section-heading">What users actually do on the page</h2>
-          <p class="ontario-section-text">
-            <strong>Context:</strong> 5 users (university students, 18–25) freely browsed the homepage prototype and shared first impressions. Behavior was layered with HubSpot mouse-dwell data for analysis.
+          <h2 class="ontario-section-heading fade-up" data-delay="100">
+            What users actually do on the page
+          </h2>
+          <p class="ontario-section-text fade-up" data-delay="100">
+            <strong>Context:</strong> 5 users (university students, 18–25)
+            freely browsed the homepage prototype and shared first impressions.
+            Behavior was layered with HubSpot mouse-dwell data for analysis.
           </p>
-          <p class="ontario-section-text">
-            <strong>Finding:</strong> users' mouse dwell concentrated in the Hero section, averaging 18 seconds.
+          <p class="ontario-section-text fade-up" data-delay="100">
+            <strong>Finding:</strong> users' mouse dwell concentrated in the
+            Hero section, averaging 18 seconds.
           </p>
-          <p class="ontario-section-text">
-            <strong>Insight:</strong> the hero attracted sufficient attention, but lacked clear action guidance. New users most wanted to know "what's next" — the step after landing on the page.
+          <p class="ontario-section-text fade-up" data-delay="100">
+            <strong>Insight:</strong> the hero attracted sufficient attention,
+            but lacked clear action guidance. New users most wanted to know
+            "what's next" — the step after landing on the page.
           </p>
-          <div class="ontario-grey-block">
-            <p class="ontario-grey-block__text">"I know the general direction, but I'm not quite clear on the steps — how do I actually use this?" — Juliana Silva, 25, Freelancer</p>
+          <div class="ontario-grey-block fade-up" data-delay="150">
+            <p class="ontario-grey-block__text">
+              "I know the general direction, but I'm not quite clear on the
+              steps — how do I actually use this?" — Juliana Silva, 25,
+              Freelancer
+            </p>
           </div>
         </div>
 
         <!-- RESEARCH STEP 3 -->
         <div class="ontario-section" id="research-step3">
-          <div class="ontario-section-label">Research</div>
-          <div class="ontario-section-banner ontario-section-banner--narrow">
+          <div class="ontario-section-label fade-up">Research</div>
+          <div class="ontario-section-banner ontario-section-banner--narrow fade-up" data-delay="50">
             Step 3: Competitive analysis
           </div>
-          <h2 class="ontario-section-heading">Benchmarking against Simplify and Teal</h2>
-          <p class="ontario-section-text">
-            On workflow guidance, Simplify was weak, only showing main features without a step-by-step feel. Teal excelled with a sticky tab nav and synced screenshot scrolling. On registration conversion, Simplify built trust through testimonials and company logos near the CTA; Teal had a more prominent CTA but less social proof. On AI differentiation, neither fully committed: Simplify didn't highlight AI capabilities at all, while Teal showed AI resume building but not job-specific tailoring.
+          <h2 class="ontario-section-heading fade-up" data-delay="100">
+            Benchmarking against Simplify and Teal
+          </h2>
+          <p class="ontario-section-text fade-up" data-delay="100">
+            On workflow guidance, Simplify was weak, only showing main features
+            without a step-by-step feel. Teal excelled with a sticky tab nav and
+            synced screenshot scrolling. On registration conversion, Simplify
+            built trust through testimonials and company logos near the CTA;
+            Teal had a more prominent CTA but less social proof. On AI
+            differentiation, neither fully committed: Simplify didn't highlight
+            AI capabilities at all, while Teal showed AI resume building but not
+            job-specific tailoring.
           </p>
-          <p class="ontario-section-text">
-            The key lesson from hero UX writing: Teal's result-oriented, number-driven copy ("Land 6X more Interviews") outperformed vague one-stop messaging.
+          <p class="ontario-section-text fade-up" data-delay="100">
+            The key lesson from hero UX writing: Teal's result-oriented,
+            number-driven copy ("Land 6X more Interviews") outperformed vague
+            one-stop messaging.
           </p>
         </div>
 
         <!-- RESEARCH STEP 4 -->
         <div class="ontario-section" id="research-step4">
-          <div class="ontario-section-label">Research</div>
-          <div class="ontario-section-banner ontario-section-banner--narrow">
+          <div class="ontario-section-label fade-up">Research</div>
+          <div class="ontario-section-banner ontario-section-banner--narrow fade-up" data-delay="50">
             Step 4: UX/UI audit
           </div>
-          <h2 class="ontario-section-heading">Six core problems with the existing homepage</h2>
-          <ul class="ontario-section-text" style="padding-left: 20px; max-width: 680px; margin-top: 0;">
+          <h2 class="ontario-section-heading fade-up" data-delay="100">
+            Six core problems with the existing homepage
+          </h2>
+          <ul
+            class="ontario-section-text fade-up" data-delay="100"
+            style="padding-left: 20px; max-width: 680px; margin-top: 0"
+          >
             <li>The CTA lacked visual prominence.</li>
             <li>The hero image was oversized without being persuasive.</li>
-            <li>Colors were used inconsistently for different semantic meanings, causing confusion.</li>
-            <li>The headline didn't define the target audience or the product's position.</li>
-            <li>There was no social proof, no quantitative data, and no visual hierarchy to direct attention.</li>
-            <li>UX language was also inconsistent across sections, with design failing to communicate specific, concrete information.</li>
+            <li>
+              Colors were used inconsistently for different semantic meanings,
+              causing confusion.
+            </li>
+            <li>
+              The headline didn't define the target audience or the product's
+              position.
+            </li>
+            <li>
+              There was no social proof, no quantitative data, and no visual
+              hierarchy to direct attention.
+            </li>
+            <li>
+              UX language was also inconsistent across sections, with design
+              failing to communicate specific, concrete information.
+            </li>
           </ul>
         </div>
 
         <!-- KEY INSIGHTS SECTION -->
         <div class="ontario-section" id="insights">
-          <div class="ontario-section-label">Key Insights</div>
-          <h2 class="ontario-section-heading">Four patterns shaped the redesign direction</h2>
-          <ul class="ontario-section-text" style="padding-left: 20px; max-width: 680px; margin-top: 0;">
-            <li><strong>Visual:</strong> unclear text hierarchy created confusion between primary and secondary information — especially for non-native English speakers who rely more heavily on visual structure than linguistic cues.</li>
-            <li><strong>Language:</strong> poor clarity across different literacy levels. UX copy was inconsistent and didn't guide users who were unfamiliar with AI job tools.</li>
-            <li><strong>Trust &amp; Credibility:</strong> the absence of social proof, user data, and quantitative signals weakened perceived safety and credibility for first-time visitors.</li>
-            <li><strong>Workflow Clarity:</strong> users couldn't confidently identify what the product did or how to start. A clear step-by-step flow representation was needed to reduce drop-off at the hero stage.</li>
+          <div class="ontario-section-label fade-up">Key Insights</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100">
+            Four patterns shaped the redesign direction
+          </h2>
+          <ul
+            class="ontario-section-text fade-up" data-delay="100"
+            style="padding-left: 20px; max-width: 680px; margin-top: 0"
+          >
+            <li>
+              <strong>Visual:</strong> unclear text hierarchy created confusion
+              between primary and secondary information — especially for
+              non-native English speakers who rely more heavily on visual
+              structure than linguistic cues.
+            </li>
+            <li>
+              <strong>Language:</strong> poor clarity across different literacy
+              levels. UX copy was inconsistent and didn't guide users who were
+              unfamiliar with AI job tools.
+            </li>
+            <li>
+              <strong>Trust &amp; Credibility:</strong> the absence of social
+              proof, user data, and quantitative signals weakened perceived
+              safety and credibility for first-time visitors.
+            </li>
+            <li>
+              <strong>Workflow Clarity:</strong> users couldn't confidently
+              identify what the product did or how to start. A clear
+              step-by-step flow representation was needed to reduce drop-off at
+              the hero stage.
+            </li>
           </ul>
         </div>
 
         <!-- SOLUTION — DESIGN TRADEOFFS -->
         <div class="ontario-section" id="solution">
-          <div class="ontario-section-label">Solution</div>
-          <h2 class="ontario-section-heading">Design tradeoffs</h2>
-          <p class="ontario-section-text">
-            Given the early-stage context and the user finding that people needed to understand fast, two key tradeoffs shaped the final direction: cleaner visual hierarchy over feature visibility, and fast understanding over full-storytelling flow.
+          <div class="ontario-section-label fade-up">Solution</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100">Design tradeoffs</h2>
+          <p class="ontario-section-text fade-up" data-delay="100">
+            Given the early-stage context and the user finding that people
+            needed to understand fast, two key tradeoffs shaped the final
+            direction: cleaner visual hierarchy over feature visibility, and
+            fast understanding over full-storytelling flow.
           </p>
         </div>
 
         <!-- SOLUTION — FROM INSIGHTS TO DESIGN -->
         <div class="ontario-section" id="solution-design">
-          <div class="ontario-section-label">Solution</div>
-          <h2 class="ontario-section-heading">From insights to design</h2>
-          <p class="ontario-section-text">The final V2 design addressed each problem area with a concrete decision.</p>
-          <ul class="ontario-section-text" style="padding-left: 20px; max-width: 100%; margin-top: 0;">
-            <li>The hero copy was rewritten with outcome-focused language and a single prominent CTA with low-friction reassurance ("Free plan · No credit card required").</li>
-            <li>The homepage now visualizes Blinkle's four-step workflow directly — answering "how does this work?" before users need to ask.</li>
-            <li>Feature sections were redesigned as card-based UI snippets showing real output states like resume completion percentage and job match scores, making AI capabilities tangible.</li>
-            <li>A unified color system was established so green consistently signals progress, removing semantic ambiguity.</li>
-            <li>Social proof, job count indicators, and match scores were embedded throughout to build confidence without requiring testimonials.</li>
-            <li>Pricing tiers were redesigned with descriptive subtitles and a highlighted recommended plan, reducing the psychological risk of committing for first-time users.</li>
+          <div class="ontario-section-label fade-up">Solution</div>
+          <h2 class="ontario-section-heading fade-up" data-delay="100">From insights to design</h2>
+          <p class="ontario-section-text fade-up" data-delay="100">
+            The final V2 design addressed each problem area with a concrete
+            decision.
+          </p>
+          <ul
+            class="ontario-section-text fade-up" data-delay="100"
+            style="padding-left: 20px; max-width: 100%; margin-top: 0"
+          >
+            <li>
+              The hero copy was rewritten with outcome-focused language and a
+              single prominent CTA with low-friction reassurance ("Free plan ·
+              No credit card required").
+            </li>
+            <li>
+              The homepage now visualizes Blinkle's four-step workflow directly
+              — answering "how does this work?" before users need to ask.
+            </li>
+            <li>
+              Feature sections were redesigned as card-based UI snippets showing
+              real output states like resume completion percentage and job match
+              scores, making AI capabilities tangible.
+            </li>
+            <li>
+              A unified color system was established so green consistently
+              signals progress, removing semantic ambiguity.
+            </li>
+            <li>
+              Social proof, job count indicators, and match scores were embedded
+              throughout to build confidence without requiring testimonials.
+            </li>
+            <li>
+              Pricing tiers were redesigned with descriptive subtitles and a
+              highlighted recommended plan, reducing the psychological risk of
+              committing for first-time users.
+            </li>
           </ul>
         </div>
-
       </div>
       <!-- end .ontario-content -->
     </div>
     <!-- end .ontario-layout -->
 
+    <script>
+      (function () {
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Fade-up: reveal elements as they enter the viewport
+        if (!prefersReduced) {
+          var fadeObs = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  var el = entry.target;
+                  var delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+                  setTimeout(function () {
+                    el.classList.add('is-visible');
+                  }, delay);
+                  fadeObs.unobserve(el);
+                }
+              });
+            },
+            { threshold: 0.12 }
+          );
+
+          document.querySelectorAll('.fade-up').forEach(function (el) {
+            fadeObs.observe(el);
+          });
+        }
+
+        // Active nav: highlight sidebar link whose section is in view
+        var navLinks = document.querySelectorAll('.ontario-sidebar-nav a[href^="#"]');
+        var sectionMap = [];
+        navLinks.forEach(function (link) {
+          var id = link.getAttribute('href').slice(1);
+          if (id === 'top') return;
+          var section = document.getElementById(id);
+          if (section) sectionMap.push({ el: section, link: link });
+        });
+
+        if (sectionMap.length) {
+          var navObs = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  navLinks.forEach(function (l) { l.classList.remove('nav-active'); });
+                  sectionMap.forEach(function (item) {
+                    if (item.el === entry.target) item.link.classList.add('nav-active');
+                  });
+                }
+              });
+            },
+            { rootMargin: '-20% 0px -65% 0px', threshold: 0 }
+          );
+
+          sectionMap.forEach(function (item) {
+            navObs.observe(item.el);
+          });
+        }
+      })();
+    </script>
+    <script>
+      // Project expand — click slide card to open/close section
+      (function () {
+        var panels = document.querySelectorAll('.project-expand');
+
+        function closeAll() {
+          panels.forEach(function (p) { p.classList.remove('is-open'); });
+        }
+
+        document.querySelectorAll('.slide-card[data-target]').forEach(function (card) {
+          card.addEventListener('click', function () {
+            var target = document.getElementById(card.getAttribute('data-target'));
+            if (!target) return;
+            var wasOpen = target.classList.contains('is-open');
+            closeAll();
+            if (!wasOpen) {
+              target.classList.add('is-open');
+              setTimeout(function () {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 80);
+            }
+          });
+        });
+
+        document.querySelectorAll('.project-expand__close').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            btn.closest('.project-expand').classList.remove('is-open');
+          });
+        });
+      })();
+
+      // Work section slideshow — auto-play, pause on hover
+      (function () {
+        var slides = document.querySelectorAll('.blinkle-slide');
+        var dots = document.querySelectorAll('.blinkle-dot');
+        var wrapper = document.querySelector('.blinkle-slides-wrapper');
+        if (!slides.length) return;
+        var current = 0;
+        var timer = null;
+
+        function goTo(n) {
+          slides[current].classList.remove('active');
+          dots[current].classList.remove('active');
+          current = (n + slides.length) % slides.length;
+          slides[current].classList.add('active');
+          dots[current].classList.add('active');
+        }
+
+        function start() {
+          timer = setInterval(function () { goTo(current + 1); }, 3500);
+        }
+
+        function stop() {
+          clearInterval(timer);
+          timer = null;
+        }
+
+        dots.forEach(function (dot, i) {
+          dot.addEventListener('click', function () {
+            stop();
+            goTo(i);
+            start();
+          });
+        });
+
+        if (wrapper) {
+          wrapper.addEventListener('mouseenter', stop);
+          wrapper.addEventListener('mouseleave', start);
+        }
+
+        start();
+      })();
+    </script>
     <script
       src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=683cbb03ba65ade013c7272d"
       type="text/javascript"

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blinkle AI — Case Study</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Figtree', sans-serif;
+    }
+
+    body {
+      background-color: #E8E8E8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════
+       FLOATING VECTORS — grey background
+    ══════════════════════════════════ */
+    .vector {
+      position: fixed;
+      width: 48px;
+      opacity: 0.5;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .v1 {
+      top: 10%;
+      left: 2.5%;
+      animation: drift1 9s ease-in-out infinite;
+    }
+    .v2 {
+      bottom: 12%;
+      right: 2%;
+      animation: drift2 11s ease-in-out infinite;
+      animation-delay: -4.5s;
+    }
+    .v3 {
+      top: 52%;
+      left: 1.8%;
+      animation: drift3 13s ease-in-out infinite;
+      animation-delay: -8s;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translate(0,   0)   rotate(-12deg); }
+      40%       { transform: translate(16px, -24px) rotate( -2deg); }
+      70%       { transform: translate(-8px, -10px) rotate(-20deg); }
+    }
+    @keyframes drift2 {
+      0%, 100% { transform: translate(  0,    0) rotate(16deg); }
+      50%      { transform: translate(-20px, -26px) rotate( 6deg); }
+    }
+    @keyframes drift3 {
+      0%, 100% { transform: translate( 0,    0)  rotate(-8deg); }
+      35%      { transform: translate(12px, -20px) rotate( 4deg); }
+      70%      { transform: translate(-6px,  14px) rotate(-16deg); }
+    }
+
+    /* ══════════════════════════
+       CARD
+    ══════════════════════════ */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 1080px;
+      height: 640px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 28px rgba(0,0,0,0.07);
+      z-index: 1;
+    }
+
+    /* ══════════════════════════
+       SLIDE SYSTEM
+    ══════════════════════════ */
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ══════════════════════════
+       SHARED BUTTON
+    ══════════════════════════ */
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 22px;
+      border-radius: 100px;
+      border: 1.5px solid #d0d0d0;
+      background: transparent;
+      color: #1a1a1a;
+      font-family: 'Figtree', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .btn .label-default { transition: opacity 0.15s ease; }
+    .btn .label-hover {
+      position: absolute;
+      opacity: 0;
+      font-weight: 600;
+      transition: opacity 0.15s ease;
+    }
+    .btn:hover { background-color: #9EEC8F; border-color: #9EEC8F; }
+    .btn:hover .label-default { opacity: 0; }
+    .btn:hover .label-hover   { opacity: 1; }
+
+    /* ══════════════════════════════════
+       SLIDE 1 — HOME
+    ══════════════════════════════════ */
+    .slide-1 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Brand label */
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: 0.01em;
+      display: inline-block;
+      transform: scale(1);
+      transform-origin: center;
+      transition: transform 0.5s cubic-bezier(0.34, 1.45, 0.64, 1);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* CTA button spacing */
+    .btn-start {
+      margin-top: 18px;
+      z-index: 2;
+    }
+
+    /* ── Floating texts (same mechanic as icons) ── */
+    .float-text {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      font-family: 'Figtree', sans-serif;
+      font-weight: 400;
+      color: #999;
+      white-space: nowrap;
+      transition:
+        opacity 0.4s ease,
+        transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* "Land your dream job in a blinkle" — left side, mid-height */
+    .float-headline {
+      font-size: 14px;
+      left: 56px;
+      top: 50%;
+      transform: translateY(-50%) translateX(-160px);
+      transition-delay: 0.05s;
+    }
+
+    /* "Your 1st AI job seeker" — lower-left, flies up from below */
+    .float-subline {
+      font-size: 13px;
+      left: 72px;
+      bottom: 92px;
+      transform: translate(-80px, 50px);
+      transition-delay: 0.1s;
+    }
+
+    /* ── App icons (pop on button hover) ── */
+    .icon {
+      position: absolute;
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.14);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.4s ease,
+        transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .icon-figma {
+      top: 72px; left: 88px;
+      transform: translate(-70px, -70px) scale(0.4) rotate(-14deg);
+    }
+    .icon-blinkle {
+      top: 56px; right: 96px;
+      transform: translate(70px, -70px) scale(0.4) rotate(10deg);
+      transition-delay: 0.06s;
+    }
+    .icon-vscode {
+      bottom: 72px; right: 112px;
+      transform: translate(70px, 70px) scale(0.4) rotate(-9deg);
+      transition-delay: 0.12s;
+    }
+
+    /* Hover trigger — scoped to slide-1's button */
+    .slide-1:has(.btn-start:hover) .title {
+      transform: scale(2.55);
+    }
+    .slide-1:has(.btn-start:hover) .icon-figma {
+      opacity: 1;
+      transform: translate(0,0) scale(1) rotate(-14deg);
+    }
+    .slide-1:has(.btn-start:hover) .icon-blinkle {
+      opacity: 1;
+      transform: translate(0,0) scale(1) rotate(10deg);
+    }
+    .slide-1:has(.btn-start:hover) .icon-vscode {
+      opacity: 1;
+      transform: translate(0,0) scale(1) rotate(-9deg);
+    }
+    .slide-1:has(.btn-start:hover) .float-headline {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+    .slide-1:has(.btn-start:hover) .float-subline {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    /* ══════════════════════════════════
+       SLIDE 2 — OVERVIEW
+    ══════════════════════════════════ */
+    .slide-2 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 40px 52px;
+      gap: 14px;
+    }
+
+    .page2-top {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .overview-header {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .preview-source {
+      font-size: 11px;
+      color: #c0c0c0;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .preview-source:hover { color: #999; }
+
+    .overview-desc {
+      font-size: 15px;
+      font-weight: 400;
+      color: #1a1a1a;
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    /* ── Site preview iframe ── */
+    .site-preview {
+      flex: 1;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.09);
+      background: #f5f5f5;
+    }
+
+    .site-preview iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .next-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Card grows taller on slide 2 */
+    .card {
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.5s ease;
+    }
+    .card.tall {
+      height: min(840px, 90vh);
+    }
+
+    /* ══════════════════════════════════
+       SLIDE 3 — PROJECTS
+    ══════════════════════════════════ */
+    .slide-3 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 40px 52px;
+      gap: 16px;
+    }
+
+    .projects-header {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      flex-shrink: 0;
+    }
+
+    .bento-grid {
+      flex: 1;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .bento-box {
+      background: #f4f4f4;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .bento-media {
+      flex: 1;
+      background: #e6e6e6;
+      overflow: hidden;
+      min-height: 0;
+      position: relative;
+    }
+
+    .bento-media img,
+    .bento-media video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+
+    .bento-label {
+      padding: 13px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+      background: #f4f4f4;
+      flex-shrink: 0;
+      letter-spacing: 0.01em;
+    }
+
+    /* ══════════════════════════════════
+       SLIDE 4 — LANDING PAGE DETAIL
+    ══════════════════════════════════ */
+    .slide-4 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 40px 52px;
+      gap: 18px;
+    }
+
+    .detail-header {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      flex-shrink: 0;
+    }
+
+    /* Before / After tab switcher */
+    .tab-switcher {
+      display: inline-flex;
+      background: #f0f0f0;
+      border-radius: 100px;
+      padding: 3px;
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      padding: 7px 22px;
+      border-radius: 100px;
+      border: none;
+      background: transparent;
+      font-family: 'Figtree', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #888;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: #fff;
+      color: #1a1a1a;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Scrollable image area */
+    .compare-view {
+      flex: 1;
+      width: 100%;
+      border-radius: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #f8f8f8;
+      min-height: 0;
+    }
+
+    .compare-view img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Clickable bento boxes */
+    .bento-box-1, .bento-box-2, .bento-box-3 {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .bento-box-1:hover, .bento-box-2:hover, .bento-box-3:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    /* Small caption under bento label */
+    .bento-body {
+      padding: 2px 16px 11px;
+      font-size: 11px;
+      color: #aaa;
+      background: #f4f4f4;
+    }
+
+    /* ══════════════════════════════════
+       SLIDE 5 — DASHBOARD PROTOTYPE
+    ══════════════════════════════════ */
+    .slide-5 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 40px 52px;
+      gap: 16px;
+    }
+
+    .proto-fixed-wrap {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .proto-fixed-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ══════════════════════════════════
+       SLIDE 6 — INTERVIEW + MARKETPLACE
+    ══════════════════════════════════ */
+    .slide-6 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 36px 52px 32px;
+      gap: 14px;
+    }
+
+    .subslide-wrap {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .subslide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .subslide.active { display: grid; }
+
+    .subslide-left {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .slide-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #9EEC8F;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .stat-num {
+      font-size: 80px;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-sub {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: -4px;
+    }
+
+    .slide-headline {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1.25;
+    }
+
+    .slide-body {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .slide-quote {
+      font-style: italic;
+      color: #333;
+      border-left: 3px solid #9EEC8F;
+      padding-left: 12px;
+    }
+
+    .visual-placeholder {
+      background: #f2f2f2;
+      border-radius: 12px;
+      border: 1px dashed #d4d4d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    /* Arrow nav */
+    .subslide-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .subslide-nav::before,
+    .subslide-nav::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e8e8e8;
+    }
+
+    .arrow-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #d0d0d0;
+      background: transparent;
+      font-family: 'Figtree', sans-serif;
+      font-size: 15px;
+      color: #1a1a1a;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .arrow-btn:hover { background: #9EEC8F; border-color: #9EEC8F; }
+
+    .slide-counter {
+      font-size: 12px;
+      color: #aaa;
+      min-width: 36px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Vectors floating on grey background -->
+  <img class="vector v1" src="Vector.png" alt="">
+  <img class="vector v2" src="Vector.png" alt="">
+  <img class="vector v3" src="Vector.png" alt="">
+
+  <div class="card">
+
+    <!-- ══ SLIDE 1: Home ══ -->
+    <section class="slide slide-1 active">
+
+      <!-- App icons (appear on hover) -->
+      <img class="icon icon-figma"   src="Unknown.png"         alt="">
+      <img class="icon icon-blinkle" src="blinkle%202%201.png" alt="">
+      <img class="icon icon-vscode"  src="Unknown.jpeg"        alt="">
+
+      <!-- Floating texts (appear on hover) -->
+      <span class="float-text float-headline">Land your dream job in a blinkle</span>
+      <span class="float-text float-subline">Your 1st AI job seeker</span>
+
+      <!-- Centre content -->
+      <span class="title">blinkle ai</span>
+
+      <!-- CTA -->
+      <button class="btn btn-start">
+        <span class="label-default">view case study &nbsp;→</span>
+        <span class="label-hover">let's go &nbsp;→</span>
+      </button>
+
+    </section>
+
+    <!-- ══ SLIDE 2: Overview ══ -->
+    <section class="slide slide-2">
+
+      <div class="page2-top">
+        <h2 class="overview-header">Before we start...</h2>
+        <a class="preview-source" href="https://blinkle-ai.com" target="_blank" rel="noopener">Preview source: https://blinkle-ai.com</a>
+      </div>
+      <p class="overview-desc">Blinkle is an AI driven job seeking platform, aiming to help students and new grads to leverage their job seeking experience: from building, tailoring resume to auto application and followups.</p>
+
+      <div class="site-preview">
+        <iframe
+          src="https://blinkle-ai.com"
+          title="Blinkle AI"
+          allow="fullscreen"
+          loading="lazy"
+        ></iframe>
+      </div>
+
+      <div class="next-wrap">
+        <button class="btn btn-back">
+          <span class="label-default">← &nbsp;go back</span>
+          <span class="label-hover">← &nbsp;home</span>
+        </button>
+        <button class="btn btn-next">
+          <span class="label-default">Next &nbsp;→</span>
+          <span class="label-hover">keep going &nbsp;→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ══ SLIDE 3: Projects ══ -->
+    <section class="slide slide-3">
+
+      <h2 class="projects-header">3 months, 4 design projects</h2>
+
+      <div class="bento-grid">
+
+        <!-- Box 1: Landing Page Redesign -->
+        <div class="bento-box bento-box-1">
+          <div class="bento-media">
+            <img src="landing.png" alt="Landing Page Redesign">
+          </div>
+          <div class="bento-label">Landing Page Redesign</div>
+        </div>
+
+        <!-- Box 2: Dashboard Subscriptions -->
+        <div class="bento-box bento-box-2">
+          <div class="bento-media">
+            <img src="dashboard.png" alt="Dashboard Redesign">
+          </div>
+          <div class="bento-label">Dashboard: Subscriptions</div>
+          <div class="bento-body">click to view prototype →</div>
+        </div>
+
+        <!-- Box 3: Interview Phase -->
+        <div class="bento-box bento-box-3">
+          <div class="bento-media">
+            <img src="interview.png" alt="Interview Phase">
+          </div>
+          <div class="bento-label">New: Interview Phase</div>
+        </div>
+
+        <!-- Box 4: Pop ups -->
+        <div class="bento-box">
+          <div class="bento-media">
+            <img src="Group%20365.png" alt="Pop ups cover">
+          </div>
+          <div class="bento-label">Pop ups</div>
+        </div>
+
+      </div>
+
+      <div class="next-wrap">
+        <button class="btn btn-back-3">
+          <span class="label-default">← &nbsp;go back</span>
+          <span class="label-hover">← &nbsp;overview</span>
+        </button>
+        <button class="btn btn-next-3">
+          <span class="label-default">Next &nbsp;→</span>
+          <span class="label-hover">keep going &nbsp;→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ══ SLIDE 4: Landing Page Detail ══ -->
+    <section class="slide slide-4">
+
+      <h2 class="detail-header">Landing Page Redesign</h2>
+
+      <div class="tab-switcher">
+        <button class="tab-btn active" data-target="before">Before</button>
+        <button class="tab-btn"        data-target="after">After</button>
+      </div>
+
+      <div class="compare-view">
+        <img id="compare-img" src="Desktop.png" alt="Before">
+      </div>
+
+      <div class="next-wrap">
+        <button class="btn btn-back-4">
+          <span class="label-default">← &nbsp;go back</span>
+          <span class="label-hover">← &nbsp;projects</span>
+        </button>
+        <button class="btn btn-next-4">
+          <span class="label-default">next project &nbsp;→</span>
+          <span class="label-hover">keep going &nbsp;→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ══ SLIDE 5: Dashboard Prototype ══ -->
+    <section class="slide slide-5">
+
+      <h2 class="detail-header">Dashboard: Subscriptions</h2>
+
+      <div class="proto-fixed-wrap">
+        <iframe
+          src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/q4RdZPwvQzZ5FnxQeVuFfy/Blinkle-AI_Lynette?node-id=376-2097%26t=670ADPqGmBxd9b7b-1"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <div class="next-wrap">
+        <button class="btn btn-back-5">
+          <span class="label-default">← &nbsp;go back</span>
+          <span class="label-hover">← &nbsp;projects</span>
+        </button>
+        <button class="btn btn-next-5">
+          <span class="label-default">next project &nbsp;→</span>
+          <span class="label-hover">keep going &nbsp;→</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ══ SLIDE 6: Interview + Marketplace ══ -->
+    <section class="slide slide-6">
+
+      <h2 class="detail-header">Interview + Marketplace</h2>
+
+      <div class="subslide-wrap">
+
+        <!-- Sub 1: The Problem -->
+        <div class="subslide active" style="grid-template-columns: 1fr;">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 1 — The Problem</span>
+            <div class="stat-num">65%</div>
+            <p class="stat-sub">of users never came back</p>
+            <p class="slide-body">Users leave after auto-apply because the job is done in their mind — but the real work hasn't started yet.</p>
+          </div>
+        </div>
+
+        <!-- Sub 2: First Attempt -->
+        <div class="subslide">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 2 — First Attempt</span>
+            <h3 class="slide-headline">We tried email re-engagement</h3>
+            <p class="slide-body"><strong>What we built:</strong> email flow → sign back in → type recent companies → download resume.</p>
+            <p class="slide-body"><strong>What happened:</strong> retention was still low. User interview data — the 1–10 scale results showed limited re-engagement.</p>
+          </div>
+          <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);">
+            <iframe
+              src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/q4RdZPwvQzZ5FnxQeVuFfy/Blinkle-AI_Lynette?node-id=376-1737%26t=670ADPqGmBxd9b7b-1"
+              width="100%" height="100%"
+              style="border:none;display:block;width:100%;height:100%;"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Sub 3: The Insight -->
+        <div class="subslide">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 3 — The Insight</span>
+            <h3 class="slide-headline">How might we bring users back — not just to apply, but to stay?</h3>
+            <p class="slide-body">The Coinbase analogy: they don't just trade crypto, they built an ecosystem.</p>
+            <p class="slide-body slide-quote">"What if Blinkle wasn't just an application tool, but a study platform?"</p>
+          </div>
+          <div class="visual-placeholder">📸 2-column: Coinbase (trade + ecosystem) vs Blinkle (apply + ???) — abstract / conceptual</div>
+        </div>
+
+        <!-- Sub 4: The Concept -->
+        <div class="subslide">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 4 — The Concept</span>
+            <h3 class="slide-headline">Interview Intelligence Hub</h3>
+            <p class="slide-body">AI reads each resume + job description, identifies skill gaps, matches resources to weaknesses, and generates a prep board per interview.</p>
+          </div>
+          <div class="visual-placeholder">📸 Concept flow: Resume → AI analysis → Gap board → Matched resources</div>
+        </div>
+
+        <!-- Sub 5: The Design -->
+        <div class="subslide">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 5 — The Design</span>
+            <h3 class="slide-headline">Show the prototype</h3>
+            <p class="slide-body">Walk through <strong>P1 (scroll)</strong> → <strong>P2 (split panel)</strong>.</p>
+            <p class="slide-body">Tradeoff: storytelling vs. contextual efficiency. Split panel wins — users need context alongside content, not a sequential reveal.</p>
+          </div>
+          <div class="visual-placeholder">📸 Side-by-side: P1 scroll vs P2 split panel — annotate what changed and why</div>
+        </div>
+
+        <!-- Sub 6: The Value Connection -->
+        <div class="subslide">
+          <div class="subslide-left">
+            <span class="slide-tag">Slide 6 — The Value Connection</span>
+            <h3 class="slide-headline">Making every resume worth coming back for</h3>
+            <p class="slide-body">"The Resume that actually gets you interviews."</p>
+            <p class="slide-body">The hub makes the resume an ongoing asset, not a one-time output. This is the selling point closing argument.</p>
+          </div>
+          <div class="visual-placeholder">📸 Final P2 UI — Marketplace or Interview Hub screen. Let the design speak.</div>
+        </div>
+
+      </div>
+
+      <!-- Arrow nav with line separators -->
+      <div class="subslide-nav">
+        <button class="arrow-btn" id="prev-sub">←</button>
+        <span class="slide-counter" id="sub-counter">1 / 6</span>
+        <button class="arrow-btn" id="next-sub">→</button>
+      </div>
+
+      <div class="next-wrap">
+        <button class="btn btn-back-6">
+          <span class="label-default">← &nbsp;go back</span>
+          <span class="label-hover">← &nbsp;projects</span>
+        </button>
+        <button class="btn btn-next-6">
+          <span class="label-default">next project &nbsp;→</span>
+          <span class="label-hover">keep going &nbsp;→</span>
+        </button>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script>
+    const card   = document.querySelector('.card');
+    const slide1 = document.querySelector('.slide-1');
+    const slide2 = document.querySelector('.slide-2');
+    const slide3 = document.querySelector('.slide-3');
+    const slide4 = document.querySelector('.slide-4');
+    const slide5 = document.querySelector('.slide-5');
+    const slide6 = document.querySelector('.slide-6');
+
+    function go(from, to, tall) {
+      from.classList.remove('active');
+      to.classList.add('active');
+      card.classList.toggle('tall', tall);
+    }
+
+    // Main navigation
+    document.querySelector('.btn-start') .addEventListener('click', () => go(slide1, slide2, true));
+    document.querySelector('.btn-back')  .addEventListener('click', () => go(slide2, slide1, false));
+    document.querySelector('.btn-next')  .addEventListener('click', () => go(slide2, slide3, false));
+    document.querySelector('.btn-back-3').addEventListener('click', () => go(slide3, slide2, true));
+    document.querySelector('.btn-next-3').addEventListener('click', () => {});
+
+    // Bento box 1 → slide 4 (Landing Page)
+    document.querySelector('.bento-box-1').addEventListener('click', () => go(slide3, slide4, true));
+    document.querySelector('.btn-back-4') .addEventListener('click', () => go(slide4, slide3, false));
+    document.querySelector('.btn-next-4') .addEventListener('click', () => go(slide4, slide5, true));
+
+    // Bento box 2 → slide 5 (Dashboard Prototype)
+    document.querySelector('.bento-box-2').addEventListener('click', () => go(slide3, slide5, true));
+    document.querySelector('.btn-back-5') .addEventListener('click', () => go(slide5, slide3, false));
+    document.querySelector('.btn-next-5') .addEventListener('click', () => go(slide5, slide6, true));
+
+    // Bento box 3 → slide 6 (Interview + Marketplace)
+    document.querySelector('.bento-box-3').addEventListener('click', () => go(slide3, slide6, true));
+    document.querySelector('.btn-back-6') .addEventListener('click', () => go(slide6, slide3, false));
+    document.querySelector('.btn-next-6') .addEventListener('click', () => {});
+
+    // Before / After switcher (slide 4)
+    const compareImg = document.getElementById('compare-img');
+    document.querySelector('.tab-switcher').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      compareImg.src = btn.dataset.target === 'before' ? 'Desktop.png' : 'landing-after.png';
+      compareImg.alt = btn.dataset.target === 'before' ? 'Before' : 'After';
+      document.querySelector('.compare-view').scrollTop = 0;
+    });
+
+    // Sub-slide carousel (slide 6)
+    let currentSub = 0;
+    const subSlides  = document.querySelectorAll('.subslide');
+    const subCounter = document.getElementById('sub-counter');
+
+    function showSub(idx) {
+      subSlides[currentSub].classList.remove('active');
+      currentSub = (idx + subSlides.length) % subSlides.length;
+      subSlides[currentSub].classList.add('active');
+      subCounter.textContent = `${currentSub + 1} / ${subSlides.length}`;
+    }
+
+    document.getElementById('prev-sub').addEventListener('click', () => showSub(currentSub - 1));
+    document.getElementById('next-sub').addEventListener('click', () => showSub(currentSub + 1));
+  </script>
+
+</body>
+</html>

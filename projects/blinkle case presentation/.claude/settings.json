@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(open \"/Users/lynetteshen/Downloads/blinkle case presentation/index.html\")",
+      "Bash(xargs -0 ls)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
